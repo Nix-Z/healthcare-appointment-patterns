@@ -1,0 +1,29 @@
+import pandas as pd
+from data_analysis import analyze_data
+
+def preprocess_data():
+    data, categorical_features, numerical_features = analyze_data()
+
+    # Drop unnecessary rows 
+    data.drop(['Patient_ID'],
+              axis=1, inplace=True)
+
+    # Remove rows with any empty values
+    data = data.dropna().reset_index(drop=True)
+
+    # Changing from float to int
+    data['Age'] = data['Age'].astype(int)
+    data['Distance_from_Facility'] = data['Distance_from_Facility'].astype(int)
+
+    # Convert 'Booking_Date' and 'Appointment_Date' to datetime objects
+    data['Booking_Date'] = pd.to_datetime(data['Booking_Date'], format="%Y-%m-%d")
+    data['Appointment_Date'] = pd.to_datetime(data['Appointment_Date'], format="%Y-%m-%d")
+  
+    print(data.head())
+    
+    categorical_features = data.select_dtypes("object").columns
+    numerical_features = data.select_dtypes("number").columns
+  
+    return data, categorical_features, numerical_features
+
+preprocess_data()
